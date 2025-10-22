@@ -1,0 +1,1 @@
+Placeholder: upload final logo files here (SVG, PNG, monochrome).
