@@ -1,0 +1,10 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local generated archives
+AiRainbowRepo_*.zip
+
+# Local runtime artifacts
+*.log
+.DS_Store
