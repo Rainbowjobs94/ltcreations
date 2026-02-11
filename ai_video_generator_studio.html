@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Video Generator Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #111827; color: #f9fafb; }
+    .glass-pane { background: rgba(31,41,55,.6); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,.1); }
+    .btn-primary { background:#4f46e5; transition: background .2s; }
+    .btn-primary:hover { background:#4338ca; }
+    .btn-secondary { background:#374151; transition: background .2s; }
+    .btn-secondary:hover { background:#4b5563; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #1f2937; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+    canvas { border:1px solid rgba(255,255,255,.2); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 lg:p-6">
+  <header class="w-full max-w-7xl mx-auto mb-4">
+    <h1 class="text-3xl font-bold text-white flex items-center gap-2">🎬 AI Video Generator Studio</h1>
+    <p class="text-gray-400 mt-1">Script → Storyboard → Local Visual Assets → Canvas Playback (+ optional Tone.js SFX).</p>
+  </header>
+
+  <main class="flex-grow w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="lg:col-span-3 flex flex-col gap-4">
+      <div class="glass-pane rounded-lg p-4">
+        <h2 class="text-lg font-semibold mb-2">Script Editor</h2>
+        <textarea id="script-input" class="w-full h-52 bg-gray-900 text-gray-300 rounded-md p-3 text-sm border border-gray-600 custom-scrollbar" placeholder="Enter your video script..."></textarea>
+        <div class="mt-4 flex flex-col gap-3 text-sm">
+          <button id="generate-storyboard-btn" class="w-full btn-primary text-white font-semibold py-2 px-4 rounded-lg">1. Generate Storyboard</button>
+          <button id="generate-assets-btn" class="w-full btn-secondary text-white font-semibold py-2 px-4 rounded-lg">2. Generate Local Assets</button>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="play-btn" class="btn-primary text-white font-semibold py-2 px-4 rounded-lg">Play</button>
+            <button id="stop-btn" class="btn-secondary text-white font-semibold py-2 px-4 rounded-lg">Stop</button>
+          </div>
+        </div>
+      </div>
+      <div class="glass-pane rounded-lg p-4 text-xs text-gray-400">
+        <h3 class="text-sm text-white font-semibold mb-2">Google Drive Blueprint</h3>
+        <p>This local page preserves the Drive integration architecture as a plug-in target (OAuth Client + Drive API), but runs keyless by default for offline prototyping.</p>
+      </div>
+    </div>
+
+    <div class="lg:col-span-6 flex flex-col items-center justify-center glass-pane rounded-lg p-4">
+      <div class="w-full aspect-video bg-black rounded-lg relative overflow-hidden flex items-center justify-center">
+        <canvas id="video-canvas" class="w-full h-full" width="1280" height="720"></canvas>
+        <div id="on-screen-text" class="absolute bottom-10 left-4 right-4 text-center text-white text-xl md:text-3xl font-bold" style="text-shadow:2px 2px 8px rgba(0,0,0,.8)"></div>
+      </div>
+      <div class="w-full mt-4">
+        <div class="w-full h-2 bg-gray-700 rounded-full relative">
+          <div id="progress-bar" class="h-full bg-indigo-500 rounded-full" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span id="current-time">00:00</span>
+          <span id="duration">00:00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-3 flex flex-col">
+      <div class="glass-pane rounded-lg p-4 flex-grow flex flex-col min-h-[300px] lg:min-h-0">
+        <h2 class="text-lg font-semibold mb-2">Storyboard</h2>
+        <div id="storyboard-container" class="flex-grow overflow-y-auto pr-2 custom-scrollbar text-xs text-gray-300">
+          <p id="storyboard-placeholder" class="text-gray-500 text-sm">Your storyboard will appear here after generation.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const scriptInput = document.getElementById('script-input');
+    const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
+    const generateAssetsBtn = document.getElementById('generate-assets-btn');
+    const playBtn = document.getElementById('play-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const storyboardContainer = document.getElementById('storyboard-container');
+    const storyboardPlaceholder = document.getElementById('storyboard-placeholder');
+    const canvas = document.getElementById('video-canvas');
+    const ctx = canvas.getContext('2d');
+    const onScreenText = document.getElementById('on-screen-text');
+    const progressBar = document.getElementById('progress-bar');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+
+    let storyboardData = [];
+    let generatedAssets = {};
+    let totalDuration = 0;
+    let raf = null;
+    let startStamp = 0;
+
+    scriptInput.value = 'Love Transcends builds secure, consent-driven social infrastructure. We protect users with transparency and auditable systems. This is survival translated into architecture.';
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function createStoryboard(script) {
+      const lines = script.split(/(?<=[.!?])\s+/).map((v) => v.trim()).filter(Boolean).slice(0, 10);
+      let t = 0;
+      return lines.map((line, index) => {
+        const duration = 3;
+        const scene = { index, start: t, end: t + duration, on_screen_text: line, visual: `Cinematic frame ${index + 1}`, sfx: index % 2 ? 'wind' : 'drone' };
+        t += duration;
+        return scene;
+      });
+    }
+
+    function renderStoryboard() {
+      storyboardContainer.innerHTML = '';
+      if (!storyboardData.length) {
+        storyboardPlaceholder.style.display = 'block';
+        return;
+      }
+      storyboardPlaceholder.style.display = 'none';
+      storyboardData.forEach((scene) => {
+        const item = document.createElement('div');
+        item.className = 'p-2 mb-2 rounded border border-white/10 bg-white/5';
+        item.innerHTML = `<p class="text-indigo-300 font-bold">Scene ${scene.index + 1} (${formatTime(scene.start)}-${formatTime(scene.end)})</p><p class="mt-1">${scene.on_screen_text}</p>`;
+        storyboardContainer.appendChild(item);
+      });
+    }
+
+    function createSceneAsset(scene) {
+      const c = document.createElement('canvas');
+      c.width = 1280;
+      c.height = 720;
+      const cctx = c.getContext('2d');
+      const hue = (scene.index * 47) % 360;
+      const g = cctx.createLinearGradient(0, 0, c.width, c.height);
+      g.addColorStop(0, `hsl(${hue},70%,18%)`);
+      g.addColorStop(1, `hsl(${(hue + 110) % 360},70%,30%)`);
+      cctx.fillStyle = g;
+      cctx.fillRect(0, 0, c.width, c.height);
+      cctx.fillStyle = '#fff';
+      cctx.font = 'bold 58px Inter';
+      cctx.fillText(`Scene ${scene.index + 1}`, 48, 96);
+      cctx.font = '28px Inter';
+      cctx.fillText(scene.visual, 48, 148);
+      return c.toDataURL('image/png');
+    }
+
+    function createSfx(desc, when) {
+      if (typeof Tone === 'undefined') return;
+      const d = desc.toLowerCase();
+      if (d.includes('drone')) {
+        const synth = new Tone.Synth({ oscillator: { type: 'sine' } }).toDestination();
+        synth.triggerAttackRelease('C2', '0.7', when);
+      } else {
+        const noise = new Tone.NoiseSynth().toDestination();
+        noise.triggerAttackRelease('0.4', when);
+      }
+    }
+
+    function findScene(t) {
+      return storyboardData.find((s) => t >= s.start && t < s.end) || null;
+    }
+
+    function drawFrame(t) {
+      const scene = findScene(t);
+      if (!scene) return;
+      const img = new Image();
+      img.src = generatedAssets[scene.index];
+      if (img.complete) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+      onScreenText.textContent = scene.on_screen_text;
+      const progress = Math.min((t / Math.max(totalDuration, 1)) * 100, 100);
+      progressBar.style.width = `${progress}%`;
+      currentTimeEl.textContent = formatTime(t);
+    }
+
+    function stopPlayback() {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+      progressBar.style.width = '0%';
+      currentTimeEl.textContent = '00:00';
+      onScreenText.textContent = '';
+    }
+
+    async function startPlayback() {
+      if (!storyboardData.length || !Object.keys(generatedAssets).length) return;
+      if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') await Tone.start();
+      storyboardData.forEach((scene) => createSfx(scene.sfx, (Tone.now ? Tone.now() : 0) + scene.start));
+      startStamp = performance.now();
+      const animate = () => {
+        const elapsed = (performance.now() - startStamp) / 1000;
+        if (elapsed >= totalDuration) {
+          stopPlayback();
+          return;
+        }
+        drawFrame(elapsed);
+        raf = requestAnimationFrame(animate);
+      };
+      animate();
+    }
+
+    generateStoryboardBtn.addEventListener('click', () => {
+      const script = scriptInput.value.trim();
+      if (!script) return;
+      storyboardData = createStoryboard(script);
+      totalDuration = storyboardData.length ? storyboardData[storyboardData.length - 1].end : 0;
+      durationEl.textContent = formatTime(totalDuration);
+      renderStoryboard();
+    });
+
+    generateAssetsBtn.addEventListener('click', () => {
+      if (!storyboardData.length) return;
+      generatedAssets = {};
+      storyboardData.forEach((scene) => { generatedAssets[scene.index] = createSceneAsset(scene); });
+      drawFrame(0);
+    });
+
+    playBtn.addEventListener('click', startPlayback);
+    stopBtn.addEventListener('click', stopPlayback);
+  </script>
+</body>
+</html>
