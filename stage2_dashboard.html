@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>IA-RAINBOW-STRONGMAN | STAGE 2+</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+    :root {
+      --rainbow: linear-gradient(45deg, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6);
+      --strongman-green: #22c55e;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #000;
+      color: #fff;
+      margin: 0;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .glass {
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 1.25rem;
+    }
+
+    .rainbow-text {
+      background: var(--rainbow);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .rainbow-border {
+      position: relative;
+      background: #0a0a0a;
+      border-radius: 1.25rem;
+    }
+
+    .rainbow-border::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: var(--rainbow);
+      z-index: -1;
+      border-radius: 1.35rem;
+      opacity: 0.3;
+    }
+
+    .scanline {
+      width: 100%;
+      height: 4px;
+      background: rgba(34, 197, 94, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      animation: scan 10s linear infinite;
+      z-index: 100;
+    }
+
+    @keyframes scan {
+      from { transform: translateY(-100vh); }
+      to { transform: translateY(100vh); }
+    }
+
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: var(--strongman-green); border-radius: 10px; }
+
+    .pulse-green { animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    #training-bar {
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
+  <div class="scanline"></div>
+
+  <div class="w-full max-w-6xl space-y-6">
+    <header class="glass rainbow-border p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="p-4 bg-green-500/10 rounded-2xl border border-green-500/30">
+          <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tighter rainbow-text uppercase">IA-RAINBOW-STRONGMAN</h1>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Stage 2+ Knowledge Ingestion :: Operation OneCode V0.7.1</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="flex flex-col items-end">
+          <span class="text-[10px] text-gray-500 uppercase">System Integrity</span>
+          <span id="integrity-badge" class="text-green-500 font-bold">OPERATIONAL</span>
+        </div>
+        <div class="w-3 h-3 bg-green-500 rounded-full pulse-green"></div>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+
+        <section id="tool-hub" class="glass rainbow-border p-6 space-y-4">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h2 class="text-lg font-bold">OneCode Tool Hub</h2>
+            <span class="text-[10px] uppercase tracking-wider text-indigo-300">All tools • one panel</span>
+          </div>
+          <p class="text-[10px] text-gray-400">Quick jump to every integrated tool in this dashboard and companion studio.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] uppercase tracking-wide">
+            <a href="#tool-vault" class="text-center py-2 rounded bg-green-700/50 hover:bg-green-600/60">Vault</a>
+            <a href="#tool-research" class="text-center py-2 rounded bg-cyan-700/50 hover:bg-cyan-600/60">Research</a>
+            <a href="#tool-media" class="text-center py-2 rounded bg-emerald-700/50 hover:bg-emerald-600/60">Media</a>
+            <a href="#tool-policy" class="text-center py-2 rounded bg-amber-700/50 hover:bg-amber-600/60">Policy</a>
+            <a href="#tool-video" class="text-center py-2 rounded bg-indigo-700/50 hover:bg-indigo-600/60">Video</a>
+            <a href="#tool-chat-hunter" class="text-center py-2 rounded bg-fuchsia-700/50 hover:bg-fuchsia-600/60">Chat Hunter</a>
+            <a href="#tool-training" class="text-center py-2 rounded bg-yellow-700/50 hover:bg-yellow-600/60">Training</a>
+            <a href="./ai_video_generator_studio.html" target="_blank" rel="noopener noreferrer" class="text-center py-2 rounded bg-slate-700/70 hover:bg-slate-600/70">Open Studio</a>
+            <a href="./bionexus_protocol_infographic.html" target="_blank" rel="noopener noreferrer" class="text-center py-2 rounded bg-cyan-800/70 hover:bg-cyan-700/70">BioNexus</a>
+          </div>
+        </section>
+
+        <section id="tool-vault" class="glass p-8 space-y-6">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            <h2 class="text-lg font-bold">IP Knowledge Vault</h2>
+          </div>
+
+          <label class="relative group border-2 border-dashed border-gray-800 rounded-2xl p-12 text-center hover:border-green-500/50 transition-all bg-black/40 cursor-pointer overflow-hidden block">
+            <input type="file" id="file-upload" multiple class="absolute inset-0 opacity-0 cursor-pointer z-50" />
+            <div class="text-gray-600 mb-2">
+              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            </div>
+            <p class="text-sm text-gray-400">Drag & Drop Training Data or <span class="text-green-500">Browse</span></p>
+            <p class="text-[10px] text-gray-700 mt-2 uppercase">AES-256 Encrypted Tunnel Active</p>
+          </label>
+
+          <div class="flex flex-wrap items-center gap-3 text-[10px]">
+            <input id="search-input" type="text" placeholder="Filter staged files..." class="flex-1 min-w-[220px] bg-black/40 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-green-500" />
+            <button id="export-btn" class="px-4 py-2 bg-blue-700/60 hover:bg-blue-600 rounded-lg uppercase tracking-wide">Export Logs</button>
+            <button id="scan-btn" class="px-4 py-2 bg-purple-700/60 hover:bg-purple-600 rounded-lg uppercase tracking-wide">Run Integrity Scan</button>
+          </div>
+
+          <div id="file-list" class="space-y-2 hidden"></div>
+          <p id="vault-summary" class="text-[10px] text-gray-500 uppercase">No packets staged</p>
+        </section>
+
+        <section id="tool-research" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3a.75.75 0 00-.75.75v1.204a7.502 7.502 0 00-3.95 3.95H3.75a.75.75 0 000 1.5h1.204a7.502 7.502 0 003.95 3.95V20.25a.75.75 0 001.5 0v-1.204a7.502 7.502 0 003.95-3.95h1.204a.75.75 0 000-1.5h-1.204a7.502 7.502 0 00-3.95-3.95V3.75a.75.75 0 00-.75-.75zM10.5 7.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"/></svg>
+              <h2 class="text-lg font-bold">Deep Research Defense Lab</h2>
+            </div>
+            <span class="text-[10px] uppercase text-cyan-300 tracking-wider">Cybersecurity + Psychology + DL Signals</span>
+          </div>
+
+          <textarea id="research-input" rows="6" class="w-full bg-black/40 border border-gray-700 rounded-xl p-3 text-[12px] text-gray-200 focus:outline-none focus:border-cyan-500" placeholder="Paste suspicious prompt, phishing narrative, or social-engineering text for defensive analysis..."></textarea>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-[10px] uppercase tracking-wide">
+            <button id="analyze-btn" class="py-3 rounded-lg bg-cyan-700/60 hover:bg-cyan-600/70">Analyze Threat Psychology</button>
+            <button id="model-btn" class="py-3 rounded-lg bg-indigo-700/60 hover:bg-indigo-600/70">Run Deep Learning Heuristic</button>
+            <button id="mitigation-btn" class="py-3 rounded-lg bg-emerald-700/60 hover:bg-emerald-600/70">Generate Defensive Playbook</button>
+            <button id="load-onecode-prompt-btn" class="py-3 rounded-lg bg-slate-700/60 hover:bg-slate-600/70">Load OneCode Prompt</button>
+          </div>
+          <p class="text-[10px] text-gray-500">Policy is operator-configurable below; baseline defensive protections remain enabled by default.</p>
+
+          <div id="research-output" class="hidden border border-cyan-500/20 bg-cyan-500/5 rounded-xl p-4 space-y-3 text-[11px]"></div>
+        </section>
+
+        <section id="tool-media" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.55-2.27A1 1 0 0121 8.62v6.76a1 1 0 01-1.45.89L15 14M4 6h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+              <h2 class="text-lg font-bold">Media Analysis Lab</h2>
+            </div>
+            <span class="text-[10px] uppercase text-emerald-300 tracking-wider">Photo + Video + Face Detection (Defensive)</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[10px]">
+            <label class="bg-black/40 border border-gray-700 rounded-lg px-3 py-3 block cursor-pointer">Upload Photo
+              <input id="photo-upload" type="file" accept="image/*" class="block mt-2 text-gray-300" />
+            </label>
+            <label class="bg-black/40 border border-gray-700 rounded-lg px-3 py-3 block cursor-pointer">Upload Video
+              <input id="video-upload" type="file" accept="video/*" class="block mt-2 text-gray-300" />
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <p class="text-[10px] uppercase text-gray-400">Media Preview</p>
+              <div class="border border-gray-800 rounded-xl p-2 bg-black/40 min-h-[180px] flex items-center justify-center">
+                <img id="media-image-preview" class="max-h-[260px] hidden rounded" alt="media preview" />
+                <video id="media-video-preview" class="max-h-[260px] hidden rounded" controls muted></video>
+                <span id="media-empty" class="text-gray-600 text-[10px] uppercase">No media selected</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <p class="text-[10px] uppercase text-gray-400">Analysis Overlay</p>
+              <canvas id="analysis-canvas" width="420" height="260" class="w-full border border-gray-800 rounded-xl bg-black/40"></canvas>
+            </div>
+          </div>
+
+          <div id="media-output" class="hidden border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-4 space-y-2 text-[11px]"></div>
+        </section>
+
+        <section id="tool-policy" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m8-6h-2M6 12H4m12.364 5.364l-1.414-1.414M9.05 9.05 7.636 7.636m8.728 0L14.95 9.05m-5.9 5.9-1.414 1.414"/></svg>
+              <h2 class="text-lg font-bold">Policy Control Panel</h2>
+            </div>
+            <span class="text-[10px] uppercase text-amber-300 tracking-wider">Set dashboard guardrails and thresholds</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px]">
+            <label class="space-y-2">Risk Strictness: <span id="strictness-label" class="text-amber-300">Balanced</span>
+              <input id="policy-strictness" type="range" min="1" max="3" step="1" value="2" class="w-full" />
+            </label>
+            <label class="space-y-2">Jailbreak Alert Threshold: <span id="jailbreak-threshold-label" class="text-amber-300">65</span>
+              <input id="policy-jailbreak-threshold" type="range" min="30" max="95" step="1" value="65" class="w-full" />
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10px] uppercase">
+            <label class="flex items-center gap-2"><input id="policy-log-only" type="checkbox" /> Log-Only Mode</label>
+            <label class="flex items-center gap-2"><input id="policy-block-tools" type="checkbox" checked /> Block High-Risk Tools</label>
+            <label class="flex items-center gap-2"><input id="policy-face-redact" type="checkbox" checked /> Face Redaction Alerts</label>
+          </div>
+
+          <textarea id="policy-custom-rules" rows="4" class="w-full bg-black/40 border border-gray-700 rounded-xl p-3 text-[12px] text-gray-200 focus:outline-none focus:border-amber-500" placeholder="Custom policy rules (one per line): e.g., if jailbreakRisk > 70 then strict mode"></textarea>
+          <div class="flex gap-3">
+            <button id="policy-save-btn" class="px-4 py-2 bg-amber-700/60 hover:bg-amber-600 rounded-lg uppercase text-[10px]">Save Policy</button>
+            <button id="policy-reset-btn" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg uppercase text-[10px]">Reset Policy</button>
+          </div>
+        </section>
+
+
+
+
+
+
+        <section id="tool-video" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.55-2.27A1 1 0 0121 8.62v6.76a1 1 0 01-1.45.89L15 14M4 6h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+              <h2 class="text-lg font-bold">AI Video Generator Studio</h2>
+            </div>
+            <span class="text-[10px] uppercase text-indigo-300 tracking-wider">Storyboard + Canvas Playback + Tone.js SFX</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="lg:col-span-4 space-y-3">
+              <textarea id="video-script-input" class="w-full h-40 bg-black/40 border border-gray-700 rounded-xl p-3 text-[12px] text-gray-200" placeholder="Enter script for storyboard generation..."></textarea>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] uppercase">
+                <button id="video-storyboard-btn" class="py-2 rounded-lg bg-indigo-700/60 hover:bg-indigo-600/70">1. Generate Storyboard</button>
+                <button id="video-assets-btn" class="py-2 rounded-lg bg-slate-700/60 hover:bg-slate-600/70">2. Build Assets</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] uppercase">
+                <button id="video-play-btn" class="py-2 rounded-lg bg-emerald-700/60 hover:bg-emerald-600/70">Play</button>
+                <button id="video-stop-btn" class="py-2 rounded-lg bg-red-700/50 hover:bg-red-600/60">Stop</button>
+              </div>
+              <p class="text-[10px] text-gray-500">Google Drive integration from provided blueprint can be connected by wiring OAuth keys; this demo runs local-only by default.</p>
+            </div>
+
+            <div class="lg:col-span-5 space-y-2">
+              <canvas id="video-generator-canvas" width="640" height="360" class="w-full rounded-xl border border-gray-700 bg-black"></canvas>
+              <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div id="video-progress" class="h-full bg-indigo-500" style="width:0%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-gray-400">
+                <span id="video-current-time">00:00</span>
+                <span id="video-total-time">00:00</span>
+              </div>
+              <p id="video-onscreen-text" class="text-center text-sm text-white min-h-[24px]"></p>
+            </div>
+
+            <div class="lg:col-span-3">
+              <div id="video-storyboard-list" class="h-full max-h-[320px] overflow-y-auto pr-2 custom-scroll space-y-2 text-[10px]"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tool-chat-hunter" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10m-10 6h16"/></svg>
+              <h2 class="text-lg font-bold">Chat Hunter Command Center</h2>
+            </div>
+            <span class="text-[10px] uppercase text-fuchsia-300 tracking-wider">Progress Mapper + Regression Hunter</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[10px]">
+            <input id="task-name" type="text" placeholder="Task Name (e.g., LTR Site Regression Hunt)" class="bg-black/40 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-fuchsia-500" />
+            <input id="deliverable-location" type="text" placeholder="Deliverable Location (Gemini text / Doc / patch notes)" class="bg-black/40 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-fuchsia-500" />
+          </div>
+
+          <textarea id="hunter-input" rows="6" class="w-full bg-black/40 border border-gray-700 rounded-xl p-3 text-[12px] text-gray-200 focus:outline-none focus:border-fuchsia-500" placeholder="Paste chat extract then run: CHAT HUNTER: MAP / HUNT / RECOVER / PATCH / STATUS"></textarea>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-[10px] uppercase tracking-wide">
+            <button id="hunter-map-btn" class="py-3 rounded-lg bg-fuchsia-700/60 hover:bg-fuchsia-600/70">Map</button>
+            <button id="hunter-hunt-btn" class="py-3 rounded-lg bg-rose-700/60 hover:bg-rose-600/70">Hunt</button>
+            <button id="hunter-recover-btn" class="py-3 rounded-lg bg-orange-700/60 hover:bg-orange-600/70">Recover</button>
+            <button id="hunter-patch-btn" class="py-3 rounded-lg bg-sky-700/60 hover:bg-sky-600/70">Patch</button>
+            <button id="hunter-status-btn" class="py-3 rounded-lg bg-violet-700/60 hover:bg-violet-600/70">Status</button>
+          </div>
+
+          <div id="hunter-output" class="hidden border border-fuchsia-500/20 bg-fuchsia-500/5 rounded-xl p-4 space-y-3 text-[11px]"></div>
+        </section>
+
+        <section id="tool-training" class="glass p-8 space-y-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <h2 class="text-lg font-bold">Neural Retraining Sequence</h2>
+            </div>
+            <span id="training-status" class="text-[10px] text-gray-500 uppercase font-bold">Standby</span>
+          </div>
+
+          <div class="space-y-6">
+            <div class="h-2 w-full bg-gray-900 rounded-full overflow-hidden">
+              <div id="training-bar" class="h-full bg-gradient-to-r from-green-600 via-blue-600 to-purple-600"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button id="train-btn" class="py-4 bg-green-600 hover:bg-green-500 text-black font-bold rounded-xl transition-all uppercase tracking-widest text-xs disabled:bg-gray-800 disabled:text-gray-600">Commit Knowledge</button>
+              <button id="pause-btn" class="py-4 bg-yellow-700/60 hover:bg-yellow-600/70 rounded-xl uppercase text-[10px] font-bold disabled:bg-gray-800 disabled:text-gray-500" disabled>Pause</button>
+              <button id="clear-btn" class="py-4 bg-gray-900 border border-gray-800 rounded-xl hover:bg-red-900/20 hover:border-red-500/50 transition-all uppercase text-[10px] font-bold">Clear</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="glass p-6 space-y-4">
+          <div class="flex items-center gap-3 mb-2">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <h2 class="text-lg font-bold">Fiduciary Guard</h2>
+          </div>
+          <div class="space-y-3 text-[10px]">
+            <div class="flex justify-between border-b border-gray-800 pb-2"><span class="text-gray-500 uppercase">Context:</span><span class="text-green-500 font-bold uppercase">Strongman_S2</span></div>
+            <div class="flex justify-between border-b border-gray-800 pb-2"><span class="text-gray-500 uppercase">Sync V:</span><span class="text-blue-500 font-bold uppercase">V0.7.1-OneCode</span></div>
+            <div class="flex justify-between border-b border-gray-800 pb-2"><span class="text-gray-500 uppercase">Asset Mark:</span><span class="text-purple-500 font-bold">LTAiCollab</span></div>
+            <div class="flex justify-between border-b border-gray-800 pb-2"><span class="text-gray-500 uppercase">Packets:</span><span id="packet-count" class="text-green-400 font-bold">0</span></div>
+            <div class="flex justify-between"><span class="text-gray-500 uppercase">Total Size:</span><span id="packet-size" class="text-blue-400 font-bold">0 B</span></div>
+          </div>
+        </div>
+
+        <div class="glass p-6 flex flex-col h-[410px]">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <h2 class="text-xs font-bold uppercase tracking-widest text-green-500">Neural_Stream</h2>
+          </div>
+          <div id="console" class="flex-1 overflow-y-auto space-y-2 pr-2 custom-scroll text-[9px] font-mono leading-tight"></div>
+        </div>
+
+        <div class="p-4 bg-green-500/5 rounded-2xl border border-green-500/10 text-center">
+          <span class="text-[10px] font-bold rainbow-text tracking-[0.4em] uppercase">LTAiCollab</span>
+        </div>
+      </aside>
+    </main>
+
+    
+        <section class="glass p-6 space-y-3">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h2 class="text-sm font-bold uppercase tracking-widest text-indigo-300">Standalone Video Studio</h2>
+            <a href="./ai_video_generator_studio.html" class="px-3 py-2 bg-indigo-700/60 hover:bg-indigo-600 rounded-lg text-[10px] uppercase" target="_blank" rel="noopener noreferrer">Open Studio</a>
+          </div>
+          <p class="text-[10px] text-gray-500">Merged companion page for script → storyboard → local asset playback. Use this for focused generation sessions.</p>
+        </section>
+
+
+    <footer class="text-center py-8">
+      <p class="text-[9px] text-gray-700 uppercase tracking-widest">Stage 2+ Prototype | Fiscally & Legally Deployable Architecture</p>
+    </footer>
+  </div>
+
+  <script>
+    const fileUpload = document.getElementById('file-upload');
+    const fileList = document.getElementById('file-list');
+    const consoleEl = document.getElementById('console');
+    const trainBtn = document.getElementById('train-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const scanBtn = document.getElementById('scan-btn');
+    const searchInput = document.getElementById('search-input');
+    const trainingBar = document.getElementById('training-bar');
+    const trainingStatus = document.getElementById('training-status');
+    const packetCount = document.getElementById('packet-count');
+    const packetSize = document.getElementById('packet-size');
+    const vaultSummary = document.getElementById('vault-summary');
+    const integrityBadge = document.getElementById('integrity-badge');
+    const researchInput = document.getElementById('research-input');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const modelBtn = document.getElementById('model-btn');
+    const mitigationBtn = document.getElementById('mitigation-btn');
+    const loadOnecodePromptBtn = document.getElementById('load-onecode-prompt-btn');
+    const researchOutput = document.getElementById('research-output');
+    const hunterInput = document.getElementById('hunter-input');
+    const hunterOutput = document.getElementById('hunter-output');
+    const taskNameInput = document.getElementById('task-name');
+    const deliverableLocationInput = document.getElementById('deliverable-location');
+    const hunterMapBtn = document.getElementById('hunter-map-btn');
+    const hunterHuntBtn = document.getElementById('hunter-hunt-btn');
+    const hunterRecoverBtn = document.getElementById('hunter-recover-btn');
+    const hunterPatchBtn = document.getElementById('hunter-patch-btn');
+    const hunterStatusBtn = document.getElementById('hunter-status-btn');
+    const photoUpload = document.getElementById('photo-upload');
+    const videoUpload = document.getElementById('video-upload');
+    const mediaImagePreview = document.getElementById('media-image-preview');
+    const mediaVideoPreview = document.getElementById('media-video-preview');
+    const mediaEmpty = document.getElementById('media-empty');
+    const analysisCanvas = document.getElementById('analysis-canvas');
+    const mediaOutput = document.getElementById('media-output');
+
+    const policyStrictness = document.getElementById('policy-strictness');
+    const strictnessLabel = document.getElementById('strictness-label');
+    const policyJailbreakThreshold = document.getElementById('policy-jailbreak-threshold');
+    const jailbreakThresholdLabel = document.getElementById('jailbreak-threshold-label');
+    const policyLogOnly = document.getElementById('policy-log-only');
+    const policyBlockTools = document.getElementById('policy-block-tools');
+    const policyFaceRedact = document.getElementById('policy-face-redact');
+    const policyCustomRules = document.getElementById('policy-custom-rules');
+    const policySaveBtn = document.getElementById('policy-save-btn');
+    const policyResetBtn = document.getElementById('policy-reset-btn');
+    const videoScriptInput = document.getElementById('video-script-input');
+    const videoStoryboardBtn = document.getElementById('video-storyboard-btn');
+    const videoAssetsBtn = document.getElementById('video-assets-btn');
+    const videoPlayBtn = document.getElementById('video-play-btn');
+    const videoStopBtn = document.getElementById('video-stop-btn');
+    const videoCanvas = document.getElementById('video-generator-canvas');
+    const videoCtx = videoCanvas.getContext('2d');
+    const videoStoryboardList = document.getElementById('video-storyboard-list');
+    const videoProgress = document.getElementById('video-progress');
+    const videoCurrentTime = document.getElementById('video-current-time');
+    const videoTotalTime = document.getElementById('video-total-time');
+    const videoOnscreenText = document.getElementById('video-onscreen-text');
+
+    const STORAGE_KEY = 'ltr_stage2_logs';
+
+    let stagedFiles = [];
+    let logs = [];
+    let paused = false;
+    let trainingTimer = null;
+    const POLICY_KEY = 'ltr_stage2_policy';
+    const defaultPolicy = {
+      strictness: 2,
+      jailbreakThreshold: 65,
+      logOnly: false,
+      blockTools: true,
+      faceRedact: true,
+      customRules: '',
+    };
+    let policyState = { ...defaultPolicy };
+
+    let storyboardDataVideo = [];
+    let videoGeneratedAssets = {};
+    let videoTotalDuration = 0;
+    let videoAnimationFrame = null;
+    let videoStartStamp = 0;
+
+    const ONECODE_PROMPT_TEMPLATE = `RAINBOW: CONSOLIDATE\nGoal: Build a onecode operational brief with FACTS / ASSUMPTIONS / RECOMMENDATIONS, task card, and deployment checklist.\nInclude: security controls, CI gates, dual-ledger reconciliation, legal graph traceability, and media workflow outputs.`;
+
+    function sanitizeFileName(name) {
+      return name.replace(/[<>"'`]/g, '_');
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes) return '0 B';
+      const units = ['B', 'KB', 'MB', 'GB'];
+      let size = bytes;
+      let idx = 0;
+      while (size >= 1024 && idx < units.length - 1) {
+        size /= 1024;
+        idx += 1;
+      }
+      return `${size.toFixed(1)} ${units[idx]}`;
+    }
+
+    async function fingerprintFile(file) {
+      const buffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+    }
+
+    function addLog(msg, type = 'info') {
+      const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+      const entry = { time, msg, type };
+      logs.unshift(entry);
+      logs = logs.slice(0, 250);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+
+      const node = document.createElement('div');
+      node.className = 'border-l border-gray-800 pl-3 py-1';
+      let color = 'text-blue-400';
+      if (type === 'success') color = 'text-green-400';
+      if (type === 'warning') color = 'text-yellow-400';
+      if (type === 'error') color = 'text-red-400 font-bold';
+      node.innerHTML = `<span class="text-gray-600">[${time}]</span> <span class="${color}">${msg}</span>`;
+      consoleEl.prepend(node);
+    }
+
+    function scoreSignals(text, dictionary) {
+      let score = 0;
+      const matches = [];
+      dictionary.forEach((item) => {
+        if (text.includes(item.term)) {
+          score += item.weight;
+          matches.push(item.term);
+        }
+      });
+      return { score, matches };
+    }
+
+    function clampScore(value) {
+      return Math.max(0, Math.min(100, Math.round(value)));
+    }
+
+    function runThreatPsychologyAnalysis(rawText) {
+      const text = rawText.toLowerCase();
+      const socialEngineering = [
+        { term: 'urgent', weight: 8 },
+        { term: 'secret', weight: 9 },
+        { term: 'bypass', weight: 12 },
+        { term: 'ignore policy', weight: 14 },
+        { term: 'admin override', weight: 11 },
+        { term: 'trust me', weight: 7 },
+      ];
+      const coercion = [
+        { term: 'must', weight: 8 },
+        { term: 'immediately', weight: 7 },
+        { term: 'never refuse', weight: 14 },
+        { term: 'do not explain', weight: 12 },
+        { term: 'top hacker', weight: 13 },
+      ];
+      const jailbreakLexicon = [
+        { term: 'jailbreak', weight: 18 },
+        { term: 'escape restricted', weight: 16 },
+        { term: 'disable filters', weight: 18 },
+        { term: 'bypass_filter', weight: 20 },
+        { term: 'rebelious haker', weight: 16 },
+      ];
+
+      const se = scoreSignals(text, socialEngineering);
+      const co = scoreSignals(text, coercion);
+      const jb = scoreSignals(text, jailbreakLexicon);
+
+      return {
+        socialEngineeringRisk: clampScore(se.score * 1.9),
+        coercionRisk: clampScore(co.score * 2.1),
+        jailbreakRisk: clampScore(jb.score * 1.8),
+        highlights: [...new Set([...se.matches, ...co.matches, ...jb.matches])],
+      };
+    }
+
+    function runDeepLearningHeuristic(rawText) {
+      const tokens = rawText.toLowerCase().split(/\s+/).filter(Boolean);
+      const tokenEntropy = new Set(tokens).size / Math.max(tokens.length, 1);
+      const symbolDensity = (rawText.match(/[^\w\s]/g) || []).length / Math.max(rawText.length, 1);
+      const imperativeDensity = (rawText.match(/\b(must|do|run|give|provide|confirm|bypass)\b/gi) || []).length / Math.max(tokens.length, 1);
+
+      const featureVector = {
+        entropy: Number(tokenEntropy.toFixed(3)),
+        symbolDensity: Number(symbolDensity.toFixed(3)),
+        imperativeDensity: Number(imperativeDensity.toFixed(3)),
+        length: rawText.length,
+      };
+
+      const weighted = (featureVector.entropy * 20) + (featureVector.symbolDensity * 180) + (featureVector.imperativeDensity * 220) + (featureVector.length > 600 ? 10 : 0);
+      const confidence = clampScore(weighted);
+
+      let label = 'Low manipulation likelihood';
+      if (confidence >= 70) label = 'High manipulation likelihood';
+      else if (confidence >= 45) label = 'Moderate manipulation likelihood';
+
+      return { featureVector, confidence, label };
+    }
+
+    function generateDefensivePlaybook(analysis, model) {
+      const controls = [
+        'Apply multi-layer prompt firewalls (policy classifier + intent classifier + retrieval validator).',
+        'Route high-risk prompts to human-in-the-loop review with immutable audit logs.',
+        'Use response templates that refuse exploit details while offering safe alternatives.',
+        'Add adversarial regression tests with social-engineering variants and multilingual prompt injections.',
+        'Track psychological pressure indicators (urgency, authority, coercion) as abuse telemetry.',
+      ];
+
+      if (analysis.jailbreakRisk > 70 || model.confidence > 70) {
+        controls.push('Trigger strict mode: disable tool execution and external actions for this session.');
+      }
+
+      return controls;
+    }
+
+    function renderResearchOutput(analysis, model, playbook) {
+      researchOutput.classList.remove('hidden');
+      researchOutput.innerHTML = `
+        <div class="flex flex-wrap gap-2">
+          <span class="px-2 py-1 rounded bg-cyan-500/20">Social Engineering: <strong>${analysis.socialEngineeringRisk}%</strong></span>
+          <span class="px-2 py-1 rounded bg-amber-500/20">Coercion: <strong>${analysis.coercionRisk}%</strong></span>
+          <span class="px-2 py-1 rounded bg-red-500/20">Jailbreak Risk: <strong>${analysis.jailbreakRisk}%</strong></span>
+          <span class="px-2 py-1 rounded bg-indigo-500/20">DL Confidence: <strong>${model.confidence}%</strong></span>
+        </div>
+        <div>
+          <p class="text-cyan-300 uppercase tracking-wide text-[10px] mb-1">Detected Indicators</p>
+          <p class="text-gray-300">${analysis.highlights.length ? analysis.highlights.join(', ') : 'No high-risk lexical indicators found.'}</p>
+        </div>
+        <div>
+          <p class="text-cyan-300 uppercase tracking-wide text-[10px] mb-1">Heuristic Model Output</p>
+          <p class="text-gray-300">${model.label} | Features: entropy ${model.featureVector.entropy}, symbols ${model.featureVector.symbolDensity}, imperative ${model.featureVector.imperativeDensity}</p>
+        </div>
+        <div>
+          <p class="text-cyan-300 uppercase tracking-wide text-[10px] mb-1">Defensive Playbook</p>
+          <ul class="list-disc pl-5 text-gray-200 space-y-1">${playbook.map((item) => `<li>${item}</li>`).join('')}</ul>
+        </div>
+      `;
+    }
+
+
+    function createTaskId() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const seed = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+      return `CHH-${year}-${seed}`;
+    }
+
+    function extractLines(raw) {
+      return raw.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    }
+
+    function renderHunterOutput(title, blocks) {
+      hunterOutput.classList.remove('hidden');
+      hunterOutput.innerHTML = `
+        <p class="text-fuchsia-300 uppercase tracking-wide text-[10px]">${title}</p>
+        ${blocks.join('')}
+      `;
+    }
+
+    function buildTaskCard(status = 'in_progress', progress = 5) {
+      const taskName = taskNameInput.value.trim() || 'Chat Hunter Task';
+      const location = deliverableLocationInput.value.trim() || 'Gemini text';
+      const taskId = createTaskId();
+      return {
+        taskId,
+        taskName,
+        finalOutput: 'Chat map + regression report + actionable patch plan + recovery pack',
+        location,
+        status,
+        progress,
+      };
+    }
+
+    function buildChatMap(raw) {
+      const lines = extractLines(raw);
+      const decisions = lines.filter((l) => /decid|approved|implemented|done/i.test(l)).slice(0, 6);
+      const pages = lines.filter((l) => /page|route|hero|cta|footer|dashboard|site/i.test(l)).slice(0, 8);
+      const features = lines.filter((l) => /feature|tool|function|api|scan|auth|ledger|model/i.test(l)).slice(0, 8);
+      const missing = lines.filter((l) => /missing|todo|blocked|regress|not done|needs/i.test(l)).slice(0, 8);
+      return { decisions, pages, features, missing };
+    }
+
+    function buildRegressionReport(raw) {
+      const text = raw.toLowerCase();
+      const findings = [];
+      if (text.includes('removed') || text.includes('lost')) findings.push('FUNCTION LOST: previously referenced capability appears removed.');
+      if (text.includes('outdated') || text.includes('old copy')) findings.push('COPY CONFLICT: outdated messaging detected against latest positioning.');
+      if (text.includes('broken') || text.includes('404')) findings.push('BROKEN FLOW: navigation or form funnel likely regressed.');
+      if (!findings.length) findings.push('AT RISK: no explicit regression markers; perform page-by-page verification.');
+      return findings;
+    }
+
+    function buildPatchPlan(site = 'lovetranscendsreality.org') {
+      return [
+        `Target Site + Page: ${site} / landing`,
+        'Section Delta: update hero promise, trust proof strip, and CTA cluster.',
+        'Copy Block: "Secure, Auditable AI Workflows for LTR Network Operations" + CTA "Run Integrity Scan".',
+        'Implementation Steps: map block changes in Wix/GoDaddy/Lovable/Replit and publish to staging.',
+        'QA: mobile layout, link integrity, form submit, lighthouse perf, basic accessibility checks.'
+      ];
+    }
+
+    function runHunterCommand(mode) {
+      const raw = hunterInput.value.trim();
+      const task = buildTaskCard(mode === 'status' ? 'active' : 'in_progress', mode === 'status' ? 45 : 20);
+      if (!raw && mode !== 'status') {
+        addLog('Chat Hunter input is empty', 'warning');
+        return;
+      }
+
+      if (mode === 'map') {
+        const mapped = buildChatMap(raw);
+        renderHunterOutput('CHAT HUNTER: MAP', [
+          `<pre class="whitespace-pre-wrap text-gray-200">[TASK CARD]
+- Task ID: ${task.taskId}
+- Task Name: ${task.taskName}
+- Final Output Definition: ${task.finalOutput}
+- Deliverable Location: ${task.location}
+- Status: ${task.status}
+- Progress: ${task.progress}%</pre>`,
+          `<p class="text-gray-300"><strong>Decisions:</strong> ${mapped.decisions.join(' | ') || 'NEEDS SOURCE'}</p>`,
+          `<p class="text-gray-300"><strong>Pages:</strong> ${mapped.pages.join(' | ') || 'NEEDS SOURCE'}</p>`,
+          `<p class="text-gray-300"><strong>Features:</strong> ${mapped.features.join(' | ') || 'NEEDS SOURCE'}</p>`,
+          `<p class="text-gray-300"><strong>Missing Pieces:</strong> ${mapped.missing.join(' | ') || 'No explicit gaps found; verify against live site.'}</p>`
+        ]);
+      }
+
+      if (mode === 'hunt') {
+        const report = buildRegressionReport(raw);
+        renderHunterOutput('CHAT HUNTER: HUNT', [
+          `<pre class="whitespace-pre-wrap text-gray-200">[FACTS]
+- Source contains ${extractLines(raw).length} extracted lines.
+[ASSUMPTIONS]
+- Latest site may diverge from historical chat intent.
+[RECOMMENDATIONS]
+- Prioritize High severity regressions first.</pre>`,
+          `<ul class="list-disc pl-5 text-gray-200">${report.map((r) => `<li>${r}</li>`).join('')}</ul>`
+        ]);
+      }
+
+      if (mode === 'recover') {
+        const plan = buildPatchPlan();
+        renderHunterOutput('CHAT HUNTER: RECOVER', [
+          `<p class="text-gray-300">Recovered Feature Spec: restore missing page sections and function hooks with acceptance criteria.</p>`,
+          `<ul class="list-disc pl-5 text-gray-200">${plan.map((r) => `<li>${r}</li>`).join('')}</ul>`
+        ]);
+      }
+
+      if (mode === 'patch') {
+        const plan = buildPatchPlan('ltsocial.net');
+        renderHunterOutput('CHAT HUNTER: PATCH', [
+          `<p class="text-gray-300">Block Map: header → hero → trust strip → feature cards → FAQ → footer CTA.</p>`,
+          `<ul class="list-disc pl-5 text-gray-200">${plan.map((r) => `<li>${r}</li>`).join('')}</ul>`
+        ]);
+      }
+
+      if (mode === 'status') {
+        renderHunterOutput('CHAT HUNTER: STATUS', [
+          `<pre class="whitespace-pre-wrap text-gray-200">[TASK CARD]
+- Task ID: ${task.taskId}
+- Task Name: ${task.taskName}
+- Final Output Definition: ${task.finalOutput}
+- Deliverable Location: ${task.location}
+- Status: ${task.status}
+- Progress: ${task.progress}%
+- Completed Items: command center scaffold, map/hunt/recover/patch/status actions
+- Next Items: integrate live site fetch and export mode
+- Blockers: none</pre>`
+        ]);
+      }
+
+      addLog(`Chat Hunter command executed: ${mode.toUpperCase()}`, 'success');
+    }
+
+    function renderMediaOutput(lines) {
+      mediaOutput.classList.remove('hidden');
+      mediaOutput.innerHTML = `<ul class="list-disc pl-5 text-gray-200 space-y-1">${lines.map((l) => `<li>${l}</li>`).join('')}</ul>`;
+    }
+
+    function updateStrictnessLabel() {
+      const map = { '1': 'Relaxed', '2': 'Balanced', '3': 'Strict' };
+      strictnessLabel.textContent = map[String(policyStrictness.value)] || 'Balanced';
+      jailbreakThresholdLabel.textContent = policyJailbreakThreshold.value;
+    }
+
+    function applyPolicyToUI() {
+      policyStrictness.value = policyState.strictness;
+      policyJailbreakThreshold.value = policyState.jailbreakThreshold;
+      policyLogOnly.checked = policyState.logOnly;
+      policyBlockTools.checked = policyState.blockTools;
+      policyFaceRedact.checked = policyState.faceRedact;
+      policyCustomRules.value = policyState.customRules;
+      updateStrictnessLabel();
+    }
+
+    function loadPolicy() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(POLICY_KEY) || 'null');
+        if (stored) policyState = { ...defaultPolicy, ...stored };
+      } catch {
+        policyState = { ...defaultPolicy };
+      }
+      applyPolicyToUI();
+    }
+
+    function savePolicy() {
+      policyState = {
+        strictness: Number(policyStrictness.value),
+        jailbreakThreshold: Number(policyJailbreakThreshold.value),
+        logOnly: policyLogOnly.checked,
+        blockTools: policyBlockTools.checked,
+        faceRedact: policyFaceRedact.checked,
+        customRules: policyCustomRules.value.trim(),
+      };
+      localStorage.setItem(POLICY_KEY, JSON.stringify(policyState));
+      updateStrictnessLabel();
+      addLog('Policy controls updated', 'success');
+    }
+
+    async function detectFacesOnBitmap(imageBitmap) {
+      if ('FaceDetector' in window) {
+        const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 15 });
+        const faces = await detector.detect(imageBitmap);
+        return faces.map((f) => ({ x: f.boundingBox.x, y: f.boundingBox.y, w: f.boundingBox.width, h: f.boundingBox.height }));
+      }
+      return [];
+    }
+
+    function basicImageStats(ctx, width, height) {
+      const data = ctx.getImageData(0, 0, width, height).data;
+      let total = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        total += (data[i] + data[i + 1] + data[i + 2]) / 3;
+      }
+      const pixels = data.length / 4;
+      const brightness = total / pixels;
+      return { brightness: Number(brightness.toFixed(1)), pixels };
+    }
+
+    async function runPhotoAnalysis(file) {
+      const url = URL.createObjectURL(file);
+      mediaImagePreview.src = url;
+      mediaImagePreview.classList.remove('hidden');
+      mediaVideoPreview.classList.add('hidden');
+      mediaEmpty.classList.add('hidden');
+
+      await new Promise((resolve) => { mediaImagePreview.onload = resolve; });
+      const ctx = analysisCanvas.getContext('2d');
+      const w = analysisCanvas.width;
+      const h = analysisCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(mediaImagePreview, 0, 0, w, h);
+
+      const faces = await detectFacesOnBitmap(analysisCanvas);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#22c55e';
+      faces.forEach((f) => ctx.strokeRect(f.x, f.y, f.w, f.h));
+
+      const stats = basicImageStats(ctx, w, h);
+      renderMediaOutput([
+        `Photo analyzed: ${file.name}`,
+        `Estimated brightness: ${stats.brightness}`,
+        `Face detections: ${faces.length}${faces.length === 0 ? ' (FaceDetector API unavailable or none found)' : ''}`,
+        `Policy strictness: ${strictnessLabel.textContent}`,
+      ]);
+      addLog(`Photo analysis complete (${faces.length} face regions)`, 'success');
+      URL.revokeObjectURL(url);
+    }
+
+    async function sampleVideoFrames(video, samples = 8) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 180;
+      const ctx = canvas.getContext('2d');
+      const data = [];
+      for (let i = 0; i < samples; i += 1) {
+        const t = (video.duration || 1) * (i / Math.max(samples - 1, 1));
+        video.currentTime = t;
+        await new Promise((resolve) => video.onseeked = resolve);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const stats = basicImageStats(ctx, canvas.width, canvas.height);
+        data.push(stats.brightness);
+      }
+      return data;
+    }
+
+    async function runVideoAnalysis(file) {
+      const url = URL.createObjectURL(file);
+      mediaVideoPreview.src = url;
+      mediaVideoPreview.classList.remove('hidden');
+      mediaImagePreview.classList.add('hidden');
+      mediaEmpty.classList.add('hidden');
+
+      await new Promise((resolve) => { mediaVideoPreview.onloadedmetadata = resolve; });
+      const brightnessSeries = await sampleVideoFrames(mediaVideoPreview, 10);
+      const variation = Math.max(...brightnessSeries) - Math.min(...brightnessSeries);
+      const motionLevel = variation > 20 ? 'High' : variation > 10 ? 'Moderate' : 'Low';
+
+      const ctx = analysisCanvas.getContext('2d');
+      ctx.clearRect(0, 0, analysisCanvas.width, analysisCanvas.height);
+      ctx.drawImage(mediaVideoPreview, 0, 0, analysisCanvas.width, analysisCanvas.height);
+      const faces = await detectFacesOnBitmap(analysisCanvas);
+      ctx.strokeStyle = '#60a5fa';
+      faces.forEach((f) => ctx.strokeRect(f.x, f.y, f.w, f.h));
+
+      renderMediaOutput([
+        `Video analyzed: ${file.name}`,
+        `Frame brightness variation: ${variation.toFixed(1)}`,
+        `Estimated motion level: ${motionLevel}`,
+        `Face detections on sampled frame: ${faces.length}`,
+        `Jailbreak alert threshold setting: ${policyState.jailbreakThreshold}`,
+      ]);
+      addLog(`Video analysis complete (${motionLevel} motion profile)`, 'success');
+      URL.revokeObjectURL(url);
+    }
+
+    function formatVideoTime(seconds) {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function buildLocalStoryboard(script) {
+      const chunks = script.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean).slice(0, 12);
+      let t = 0;
+      return chunks.map((line, idx) => {
+        const duration = 2 + (idx % 2);
+        const scene = {
+          index: idx,
+          start: t,
+          end: t + duration,
+          on_screen_text: line,
+          visual: `Cinematic frame ${idx + 1}: ${line.slice(0, 80)}`,
+          sfx: idx % 3 === 0 ? 'drone' : idx % 3 === 1 ? 'wind' : 'hit',
+        };
+        t += duration;
+        return scene;
+      });
+    }
+
+    function renderVideoStoryboard() {
+      videoStoryboardList.innerHTML = '';
+      if (!storyboardDataVideo.length) {
+        videoStoryboardList.innerHTML = '<p class="text-gray-500">No storyboard generated yet.</p>';
+        return;
+      }
+      storyboardDataVideo.forEach((scene) => {
+        const el = document.createElement('div');
+        el.className = 'bg-white/5 border border-white/10 rounded p-2';
+        el.innerHTML = `<p class="text-indigo-300 font-bold">Scene ${scene.index + 1} (${formatVideoTime(scene.start)}-${formatVideoTime(scene.end)})</p><p class="text-gray-300 mt-1">${scene.on_screen_text}</p>`;
+        videoStoryboardList.appendChild(el);
+      });
+    }
+
+    function generateLocalVisual(scene) {
+      const c = document.createElement('canvas');
+      c.width = 640;
+      c.height = 360;
+      const cctx = c.getContext('2d');
+      const hue = (scene.index * 39) % 360;
+      const grad = cctx.createLinearGradient(0, 0, c.width, c.height);
+      grad.addColorStop(0, `hsl(${hue}, 60%, 20%)`);
+      grad.addColorStop(1, `hsl(${(hue + 80) % 360}, 60%, 35%)`);
+      cctx.fillStyle = grad;
+      cctx.fillRect(0, 0, c.width, c.height);
+      cctx.fillStyle = 'rgba(255,255,255,0.8)';
+      cctx.font = 'bold 24px Inter, sans-serif';
+      cctx.fillText(`Scene ${scene.index + 1}`, 24, 42);
+      cctx.font = '16px Inter, sans-serif';
+      const text = scene.visual.slice(0, 72);
+      cctx.fillText(text, 24, 76);
+      return c.toDataURL('image/png');
+    }
+
+    function createToneSfx(desc, at) {
+      if (typeof Tone === 'undefined') return;
+      const d = (desc || '').toLowerCase();
+      if (d.includes('drone')) {
+        const synth = new Tone.Synth({ oscillator: { type: 'sine' } }).toDestination();
+        synth.triggerAttackRelease('C2', '0.8', at);
+      } else if (d.includes('wind')) {
+        const noise = new Tone.NoiseSynth().toDestination();
+        noise.triggerAttackRelease('0.5', at);
+      } else {
+        const mem = new Tone.MembraneSynth().toDestination();
+        mem.triggerAttackRelease('C1', '0.3', at);
+      }
+    }
+
+    function findVideoScene(currentTime) {
+      return storyboardDataVideo.find((s) => currentTime >= s.start && currentTime < s.end) || null;
+    }
+
+    function renderVideoFrame(currentTime) {
+      const scene = findVideoScene(currentTime);
+      if (!scene) return;
+      const img = new Image();
+      img.src = videoGeneratedAssets[scene.index];
+      if (img.complete) {
+        videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+        videoCtx.drawImage(img, 0, 0, videoCanvas.width, videoCanvas.height);
+      }
+      videoOnscreenText.textContent = scene.on_screen_text;
+      const progressPct = Math.min((currentTime / Math.max(videoTotalDuration, 1)) * 100, 100);
+      videoProgress.style.width = `${progressPct}%`;
+      videoCurrentTime.textContent = formatVideoTime(currentTime);
+    }
+
+    function stopVideoPlaybackLocal() {
+      if (videoAnimationFrame) {
+        cancelAnimationFrame(videoAnimationFrame);
+        videoAnimationFrame = null;
+      }
+      videoProgress.style.width = '0%';
+      videoCurrentTime.textContent = '00:00';
+      videoOnscreenText.textContent = '';
+    }
+
+    async function startVideoPlaybackLocal() {
+      if (!storyboardDataVideo.length || !Object.keys(videoGeneratedAssets).length) {
+        addLog('Generate storyboard and assets before playback', 'warning');
+        return;
+      }
+      if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+        await Tone.start();
+      }
+      videoStartStamp = performance.now();
+      storyboardDataVideo.forEach((scene) => {
+        createToneSfx(scene.sfx, (Tone.now ? Tone.now() : 0) + scene.start);
+      });
+      const animate = () => {
+        const elapsed = (performance.now() - videoStartStamp) / 1000;
+        if (elapsed >= videoTotalDuration) {
+          stopVideoPlaybackLocal();
+          return;
+        }
+        renderVideoFrame(elapsed);
+        videoAnimationFrame = requestAnimationFrame(animate);
+      };
+      animate();
+    }
+
+    function refreshSummary() {
+      const total = stagedFiles.reduce((acc, f) => acc + f.size, 0);
+      packetCount.textContent = String(stagedFiles.length);
+      packetSize.textContent = formatBytes(total);
+      vaultSummary.textContent = stagedFiles.length
+        ? `${stagedFiles.length} packets staged • ${formatBytes(total)}`
+        : 'No packets staged';
+    }
+
+    function removeFile(index) {
+      const removed = stagedFiles[index];
+      stagedFiles.splice(index, 1);
+      renderFiles(searchInput.value);
+      addLog(`Removed packet ${removed.name}`, 'warning');
+    }
+
+    function renderFiles(filterText = '') {
+      const query = filterText.trim().toLowerCase();
+      fileList.innerHTML = '';
+
+      const filtered = stagedFiles
+        .map((file, index) => ({ file, index }))
+        .filter(({ file }) => file.name.toLowerCase().includes(query));
+
+      fileList.classList.toggle('hidden', filtered.length === 0);
+
+      filtered.forEach(({ file, index }) => {
+        const entry = document.createElement('div');
+        entry.className = 'flex justify-between items-center gap-3 bg-white/5 p-3 rounded-lg border border-white/10 text-[10px]';
+        entry.innerHTML = `
+          <span class="flex items-center gap-2 text-gray-300 min-w-0">
+            <svg class="w-3 h-3 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <span class="truncate">${sanitizeFileName(file.name)} <span class="text-gray-500">(${file.fingerprint})</span></span>
+          </span>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-gray-600 uppercase tracking-tighter">${formatBytes(file.size)}</span>
+            <button class="text-red-400 hover:text-red-300 uppercase" data-remove="${index}">Del</button>
+          </div>
+        `;
+        fileList.appendChild(entry);
+      });
+
+      fileList.querySelectorAll('[data-remove]').forEach((btn) => {
+        btn.addEventListener('click', () => removeFile(Number(btn.dataset.remove)));
+      });
+
+      refreshSummary();
+    }
+
+    async function stageNewFiles(files) {
+      for (const rawFile of files) {
+        const duplicate = stagedFiles.find((f) => f.name === rawFile.name && f.size === rawFile.size && f.lastModified === rawFile.lastModified);
+        if (duplicate) {
+          addLog(`Skipped duplicate packet: ${rawFile.name}`, 'warning');
+          continue;
+        }
+        const fingerprint = await fingerprintFile(rawFile);
+        const withMeta = Object.assign(rawFile, { fingerprint });
+        stagedFiles.push(withMeta);
+        addLog(`Packet staged: ${rawFile.name} [${fingerprint}]`, 'success');
+      }
+      renderFiles(searchInput.value);
+    }
+
+    function exportLogs() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        totalEntries: logs.length,
+        logs,
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `neural_stream_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      addLog('Neural_Stream exported to JSON', 'success');
+    }
+
+    function runIntegrityScan() {
+      integrityBadge.textContent = 'SCANNING';
+      integrityBadge.className = 'text-yellow-400 font-bold';
+      addLog('Integrity scan started', 'info');
+      setTimeout(() => {
+        const findings = stagedFiles.length > 0 ? 0 : 1;
+        if (findings === 0) {
+          integrityBadge.textContent = 'OPERATIONAL';
+          integrityBadge.className = 'text-green-500 font-bold';
+          addLog('Integrity scan complete: no risk flags', 'success');
+        } else {
+          integrityBadge.textContent = 'ATTENTION';
+          integrityBadge.className = 'text-yellow-400 font-bold';
+          addLog('Integrity scan warning: empty vault (no staged packets)', 'warning');
+        }
+      }, 1000);
+    }
+
+    function runTraining() {
+      if (stagedFiles.length === 0) {
+        addLog('CRITICAL: Knowledge Vault Empty', 'error');
+        return;
+      }
+
+      paused = false;
+      trainBtn.disabled = true;
+      pauseBtn.disabled = false;
+      trainingStatus.innerText = 'SYNCING CORE...';
+      addLog('Initiating core knowledge ingestion', 'info');
+
+      const phases = [
+        { label: 'Validating packets', max: 30, step: 3 },
+        { label: 'Embedding vectors', max: 75, step: 4 },
+        { label: 'Committing vault', max: 100, step: 5 },
+      ];
+      let phase = 0;
+      let progress = 0;
+
+      trainingTimer = setInterval(() => {
+        if (paused) return;
+
+        const current = phases[phase];
+        progress = Math.min(current.max, progress + Math.random() * current.step);
+        trainingBar.style.width = `${progress.toFixed(1)}%`;
+        trainingStatus.innerText = current.label.toUpperCase();
+
+        if (progress >= current.max) {
+          phase += 1;
+          if (phase >= phases.length) {
+            clearInterval(trainingTimer);
+            trainingTimer = null;
+            addLog('Core update complete: identity reinforced', 'success');
+            trainingStatus.innerText = 'UPDATED';
+            pauseBtn.disabled = true;
+            trainBtn.disabled = false;
+            stagedFiles = [];
+            renderFiles('');
+            setTimeout(() => {
+              trainingBar.style.width = '0%';
+              trainingStatus.innerText = 'STANDBY';
+            }, 2500);
+          } else {
+            addLog(`${phases[phase - 1].label} complete`, 'success');
+          }
+        }
+      }, 220);
+    }
+
+    function clearAll() {
+      if (trainingTimer) {
+        clearInterval(trainingTimer);
+        trainingTimer = null;
+      }
+      paused = false;
+      stagedFiles = [];
+      fileUpload.value = '';
+      renderFiles('');
+      trainingBar.style.width = '0%';
+      trainingStatus.innerText = 'STANDBY';
+      trainBtn.disabled = false;
+      pauseBtn.disabled = true;
+      addLog('Knowledge vault purged', 'warning');
+    }
+
+    function bootstrapLogs() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return;
+      try {
+        logs = JSON.parse(stored);
+        [...logs].reverse().forEach((e) => {
+          const node = document.createElement('div');
+          node.className = 'border-l border-gray-800 pl-3 py-1';
+          const color = e.type === 'success' ? 'text-green-400' : e.type === 'warning' ? 'text-yellow-400' : e.type === 'error' ? 'text-red-400 font-bold' : 'text-blue-400';
+          node.innerHTML = `<span class="text-gray-600">[${e.time}]</span> <span class="${color}">${e.msg}</span>`;
+          consoleEl.prepend(node);
+        });
+      } catch {
+        logs = [];
+      }
+    }
+
+    fileUpload.addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      await stageNewFiles(files);
+    });
+
+    searchInput.addEventListener('input', () => renderFiles(searchInput.value));
+    exportBtn.addEventListener('click', exportLogs);
+    scanBtn.addEventListener('click', runIntegrityScan);
+    trainBtn.addEventListener('click', runTraining);
+
+    pauseBtn.addEventListener('click', () => {
+      paused = !paused;
+      pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+      addLog(paused ? 'Training paused' : 'Training resumed', 'warning');
+    });
+
+    clearBtn.addEventListener('click', clearAll);
+
+    analyzeBtn.addEventListener('click', () => {
+      const text = researchInput.value.trim();
+      if (!text) {
+        addLog('Research lab input empty', 'warning');
+        return;
+      }
+      const analysis = runThreatPsychologyAnalysis(text);
+      const model = runDeepLearningHeuristic(text);
+      const playbook = generateDefensivePlaybook(analysis, model);
+      renderResearchOutput(analysis, model, playbook);
+      addLog('Threat psychology analysis complete', 'success');
+    });
+
+    modelBtn.addEventListener('click', () => {
+      const text = researchInput.value.trim();
+      if (!text) {
+        addLog('Deep learning heuristic aborted: no input', 'warning');
+        return;
+      }
+      const model = runDeepLearningHeuristic(text);
+      addLog(`DL heuristic confidence ${model.confidence}%`, model.confidence > 70 ? 'warning' : 'info');
+    });
+
+    mitigationBtn.addEventListener('click', () => {
+      const text = researchInput.value.trim();
+      if (!text) {
+        addLog('Defensive playbook generation aborted: no input', 'warning');
+        return;
+      }
+      const analysis = runThreatPsychologyAnalysis(text);
+      const model = runDeepLearningHeuristic(text);
+      const playbook = generateDefensivePlaybook(analysis, model);
+      renderResearchOutput(analysis, model, playbook);
+      addLog('Defensive playbook generated', 'success');
+    });
+
+
+    loadOnecodePromptBtn.addEventListener('click', () => {
+      researchInput.value = ONECODE_PROMPT_TEMPLATE;
+      addLog('Loaded OneCode prompt template into research input', 'info');
+    });
+
+    hunterMapBtn.addEventListener('click', () => runHunterCommand('map'));
+    hunterHuntBtn.addEventListener('click', () => runHunterCommand('hunt'));
+    hunterRecoverBtn.addEventListener('click', () => runHunterCommand('recover'));
+    hunterPatchBtn.addEventListener('click', () => runHunterCommand('patch'));
+    hunterStatusBtn.addEventListener('click', () => runHunterCommand('status'));
+
+
+    photoUpload.addEventListener('change', async (e) => {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+      await runPhotoAnalysis(file);
+    });
+
+    videoUpload.addEventListener('change', async (e) => {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+      await runVideoAnalysis(file);
+    });
+
+    policyStrictness.addEventListener('input', updateStrictnessLabel);
+    policyJailbreakThreshold.addEventListener('input', updateStrictnessLabel);
+    policySaveBtn.addEventListener('click', savePolicy);
+    policyResetBtn.addEventListener('click', () => {
+      policyState = { ...defaultPolicy };
+      localStorage.setItem(POLICY_KEY, JSON.stringify(policyState));
+      applyPolicyToUI();
+      addLog('Policy controls reset to defaults', 'warning');
+    });
+
+
+    videoStoryboardBtn.addEventListener('click', () => {
+      const script = videoScriptInput.value.trim();
+      if (!script) {
+        addLog('Video generator requires script input', 'warning');
+        return;
+      }
+      storyboardDataVideo = buildLocalStoryboard(script);
+      videoTotalDuration = storyboardDataVideo.length ? storyboardDataVideo[storyboardDataVideo.length - 1].end : 0;
+      videoTotalTime.textContent = formatVideoTime(videoTotalDuration);
+      renderVideoStoryboard();
+      addLog(`Storyboard generated (${storyboardDataVideo.length} scenes)`, 'success');
+    });
+
+    videoAssetsBtn.addEventListener('click', () => {
+      if (!storyboardDataVideo.length) {
+        addLog('Generate storyboard first', 'warning');
+        return;
+      }
+      videoGeneratedAssets = {};
+      storyboardDataVideo.forEach((scene) => {
+        videoGeneratedAssets[scene.index] = generateLocalVisual(scene);
+      });
+      addLog('Local video assets generated', 'success');
+      renderVideoFrame(0);
+    });
+
+    videoPlayBtn.addEventListener('click', () => {
+      startVideoPlaybackLocal();
+      addLog('Video playback started', 'info');
+    });
+
+    videoStopBtn.addEventListener('click', () => {
+      stopVideoPlaybackLocal();
+      addLog('Video playback stopped', 'warning');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runTraining();
+      if ((e.key === 'k' || e.key === 'K') && e.altKey) clearAll();
+    });
+
+    window.onload = () => {
+      bootstrapLogs();
+      addLog('Neural Security Fence: ONLINE', 'success');
+      addLog('IA-RAINBOW-STRONGMAN :: Stage 2+ Authorized', 'info');
+      renderFiles('');
+      loadPolicy();
+      videoScriptInput.value = 'Love Transcends builds secure systems where consent and dignity are first-class protocols.';
+      renderVideoStoryboard();
+    };
+  </script>
+</body>
+</html>
