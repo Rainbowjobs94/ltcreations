@@ -123,12 +123,59 @@
             <a href="#tool-research" class="text-center py-2 rounded bg-cyan-700/50 hover:bg-cyan-600/60">Research</a>
             <a href="#tool-media" class="text-center py-2 rounded bg-emerald-700/50 hover:bg-emerald-600/60">Media</a>
             <a href="#tool-policy" class="text-center py-2 rounded bg-amber-700/50 hover:bg-amber-600/60">Policy</a>
+<<<<<<< HEAD
+            <a href="#tool-hud" class="text-center py-2 rounded bg-teal-700/50 hover:bg-teal-600/60">HUD</a>
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
             <a href="#tool-video" class="text-center py-2 rounded bg-indigo-700/50 hover:bg-indigo-600/60">Video</a>
             <a href="#tool-chat-hunter" class="text-center py-2 rounded bg-fuchsia-700/50 hover:bg-fuchsia-600/60">Chat Hunter</a>
             <a href="#tool-training" class="text-center py-2 rounded bg-yellow-700/50 hover:bg-yellow-600/60">Training</a>
             <a href="./ai_video_generator_studio.html" target="_blank" rel="noopener noreferrer" class="text-center py-2 rounded bg-slate-700/70 hover:bg-slate-600/70">Open Studio</a>
             <a href="./bionexus_protocol_infographic.html" target="_blank" rel="noopener noreferrer" class="text-center py-2 rounded bg-cyan-800/70 hover:bg-cyan-700/70">BioNexus</a>
           </div>
+<<<<<<< HEAD
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10px]">
+            <a href="./integrated_research_package.md" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-cyan-800/70 bg-cyan-950/30 p-3 hover:border-cyan-600 transition-colors">
+              <p class="uppercase text-cyan-300 tracking-wide">Research Package</p>
+              <p class="text-gray-400 mt-1">Protocol references, compliance notes, and integration guidance.</p>
+            </a>
+            <a href="./project_chimera_architecture.md" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-purple-800/70 bg-purple-950/30 p-3 hover:border-purple-600 transition-colors">
+              <p class="uppercase text-purple-300 tracking-wide">Architecture Notes</p>
+              <p class="text-gray-400 mt-1">System design map for OneCode + BioNexus components.</p>
+            </a>
+            <a href="./generate_airainbowrepo_v3.py" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-emerald-800/70 bg-emerald-950/30 p-3 hover:border-emerald-600 transition-colors">
+              <p class="uppercase text-emerald-300 tracking-wide">Archive Generator</p>
+              <p class="text-gray-400 mt-1">Build the AiRainbow scaffold archive from a reproducible script.</p>
+            </a>
+          </div>
+        </section>
+
+        <section id="tool-hud" class="glass p-6 space-y-4">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h2 class="text-lg font-bold">Live Protocol HUD</h2>
+            <span id="hud-state" class="text-[10px] uppercase tracking-wider text-green-300">Nominal</span>
+          </div>
+          <p class="text-[10px] text-gray-400">Heads-up status for integrity, training pipeline, policy posture, and active staged packets.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[10px]">
+            <div class="rounded-lg border border-gray-800 bg-black/40 p-3">
+              <p class="text-gray-500 uppercase">Integrity</p>
+              <p id="hud-integrity" class="mt-1 text-green-400 font-semibold">Operational</p>
+            </div>
+            <div class="rounded-lg border border-gray-800 bg-black/40 p-3">
+              <p class="text-gray-500 uppercase">Training</p>
+              <p id="hud-training" class="mt-1 text-blue-400 font-semibold">Standby</p>
+            </div>
+            <div class="rounded-lg border border-gray-800 bg-black/40 p-3">
+              <p class="text-gray-500 uppercase">Policy Strictness</p>
+              <p id="hud-policy" class="mt-1 text-amber-300 font-semibold">--</p>
+            </div>
+            <div class="rounded-lg border border-gray-800 bg-black/40 p-3">
+              <p class="text-gray-500 uppercase">Staged Packets</p>
+              <p id="hud-packets" class="mt-1 text-cyan-300 font-semibold">0</p>
+            </div>
+          </div>
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
         </section>
 
         <section id="tool-vault" class="glass p-8 space-y-6">
@@ -425,6 +472,14 @@
     const mediaOutput = document.getElementById('media-output');
 
     const policyStrictness = document.getElementById('policy-strictness');
+<<<<<<< HEAD
+    const hudState = document.getElementById('hud-state');
+    const hudIntegrity = document.getElementById('hud-integrity');
+    const hudTraining = document.getElementById('hud-training');
+    const hudPolicy = document.getElementById('hud-policy');
+    const hudPackets = document.getElementById('hud-packets');
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
     const strictnessLabel = document.getElementById('strictness-label');
     const policyJailbreakThreshold = document.getElementById('policy-jailbreak-threshold');
     const jailbreakThresholdLabel = document.getElementById('jailbreak-threshold-label');
@@ -1193,6 +1248,26 @@
       trainBtn.disabled = false;
       pauseBtn.disabled = true;
       addLog('Knowledge vault purged', 'warning');
+<<<<<<< HEAD
+      refreshHud();
+    }
+
+    function refreshHud() {
+      const integrity = (integrityBadge?.innerText || 'UNKNOWN').trim();
+      const training = (trainingStatus?.innerText || 'STANDBY').trim();
+      const strictness = policyStrictness ? Number(policyStrictness.value || 0) : 0;
+      const packets = stagedFiles.length;
+
+      hudIntegrity.innerText = integrity;
+      hudTraining.innerText = training;
+      hudPolicy.innerText = `${strictness}%`;
+      hudPackets.innerText = String(packets);
+
+      const alerting = integrity !== 'OPERATIONAL' || training === 'PAUSED' || strictness >= 80;
+      hudState.innerText = alerting ? 'Alerting' : 'Nominal';
+      hudState.className = `text-[10px] uppercase tracking-wider ${alerting ? 'text-amber-300' : 'text-green-300'}`;
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
     }
 
     function bootstrapLogs() {
@@ -1291,14 +1366,23 @@
       await runVideoAnalysis(file);
     });
 
+<<<<<<< HEAD
+    policyStrictness.addEventListener('input', () => { updateStrictnessLabel(); refreshHud(); });
+    policyJailbreakThreshold.addEventListener('input', () => { updateStrictnessLabel(); refreshHud(); });
+=======
     policyStrictness.addEventListener('input', updateStrictnessLabel);
     policyJailbreakThreshold.addEventListener('input', updateStrictnessLabel);
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
     policySaveBtn.addEventListener('click', savePolicy);
     policyResetBtn.addEventListener('click', () => {
       policyState = { ...defaultPolicy };
       localStorage.setItem(POLICY_KEY, JSON.stringify(policyState));
       applyPolicyToUI();
       addLog('Policy controls reset to defaults', 'warning');
+<<<<<<< HEAD
+      refreshHud();
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
     });
 
 
@@ -1351,6 +1435,11 @@
       loadPolicy();
       videoScriptInput.value = 'Love Transcends builds secure systems where consent and dignity are first-class protocols.';
       renderVideoStoryboard();
+<<<<<<< HEAD
+      refreshHud();
+      setInterval(refreshHud, 1000);
+=======
+>>>>>>> 0e89b4605052ad7e73731f8bf685380a75c059f2
     };
   </script>
 </body>
