@@ -30,10 +30,8 @@ def canonical_serialize(data: Any) -> str:
     return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-
 def sha256_hex(payload: bytes) -> str:
     return sha256(payload).hexdigest()
-
 
 
 def merkle_root(transactions: List[Dict[str, Any]]) -> str:
@@ -90,12 +88,50 @@ class ComplianceChecker(ABC):
         raise NotImplementedError
 
 
+def verify_attestation_payload(
+    payload: AttestationPayload,
+    *,
+    now_utc: Optional[datetime] = None,
+    max_age_minutes: int = 5,
+) -> Tuple[bool, str]:
+    """Apply baseline freshness/shape checks for an attestation payload.
+
+    This is a lightweight stand-in for real cryptographic signature validation.
+    """
+    now_utc = now_utc or datetime.now(timezone.utc)
+    try:
+        payload_time = datetime.fromisoformat(payload.timestamp_utc)
+    except ValueError:
+        return False, "INVALID_TIMESTAMP_FORMAT"
+
+    if payload_time.tzinfo is None:
+        return False, "TIMESTAMP_MISSING_TIMEZONE"
+
+    if now_utc - payload_time > timedelta(minutes=max_age_minutes):
+        return False, "STALE_ATTESTATION"
+
+    if not payload.signature or not payload.signer:
+        return False, "MISSING_SIGNATURE_DATA"
+
+    if not payload.device_id or not payload.nonce or not payload.zkp_hash:
+        return False, "MISSING_ATTESTATION_FIELDS"
+
+    return True, "ATTESTATION_VALID"
+
+
 class DemoComplianceChecker(ComplianceChecker):
     """Mock checker with simple policy constraints and deterministic evidence."""
 
-    def __init__(self, *, allowed_uv_max: int = 10, allowed_lux_min: int = 1000) -> None:
+    def __init__(
+        self,
+        *,
+        allowed_uv_max: int = 10,
+        allowed_lux_min: int = 1000,
+        max_attestation_age_minutes: int = 5,
+    ) -> None:
         self.allowed_uv_max = allowed_uv_max
         self.allowed_lux_min = allowed_lux_min
+        self.max_attestation_age_minutes = max_attestation_age_minutes
 
     def perform_check(self) -> ComplianceResult:
         payload = AttestationPayload(
@@ -111,6 +147,13 @@ class DemoComplianceChecker(ComplianceChecker):
             signer="demo-attestor",
             signature="demo-signature",
         )
+
+        valid, reason = verify_attestation_payload(
+            payload,
+            max_age_minutes=self.max_attestation_age_minutes,
+        )
+        if not valid:
+            return ComplianceResult(False, reason, {"attestation": asdict(payload)})
 
         # Mock policy checks. In production, signature and quote verification
         # should happen against trusted roots + hardware attestation APIs.
@@ -247,6 +290,27 @@ class Blockchain:
         self.chain.append(block)
         return block
 
+    def validate_chain(self) -> Tuple[bool, str]:
+        """Validate every block linkage and hash in the current chain."""
+        if not self.chain:
+            return False, "EMPTY_CHAIN"
+
+        for index, block in enumerate(self.chain):
+            if block.block_hash != block.calculate_hash():
+                return False, f"HASH_MISMATCH_AT_{index}"
+
+            if block.header.transaction_merkle_root != merkle_root(block.transactions):
+                return False, f"MERKLE_MISMATCH_AT_{index}"
+
+            if index == 0:
+                continue
+
+            prev = self.chain[index - 1]
+            if block.header.previous_hash != prev.block_hash:
+                return False, f"LINK_MISMATCH_AT_{index}"
+
+        return True, "CHAIN_VALID"
+
 
 # -------------------------------
 # Mining flow
@@ -288,7 +352,9 @@ if __name__ == "__main__":
     )
     rec = escrow.create_escrow(notary="notary-001", reward_amount=1000, block_height=mined.header.index)
 
+    is_valid, status = chain.validate_chain()
     print("Mined block:", mined.header.index, mined.block_hash[:16], "...")
     print("Merkle root:", mined.header.transaction_merkle_root[:16], "...")
     print("Compliance hash:", mined.header.compliance_data_hash[:16], "...")
     print("Escrow split:", {"liquid": rec.liquid_amount, "escrow": rec.escrow_amount})
+    print("Chain validation:", is_valid, status)
